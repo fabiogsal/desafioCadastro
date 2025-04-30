@@ -1,6 +1,8 @@
 package Repository;
 
-import java.util.Scanner;
+import Utils.UtilValidator;
+import Service.FormService;
+
 import java.util.concurrent.TimeUnit;
 
 public class Menu {
@@ -14,23 +16,11 @@ public class Menu {
         UserChoice();
     }
     public static void UserChoice(){
-        Scanner scanner = new Scanner(System.in);
-        String choice;
-        int validChoice;
-        while(true){
-            System.out.println("Insira a opção desejada: ");
-            choice = scanner.nextLine();
-            try {
-                validChoice = Integer.parseInt(choice);
-                break;
-            } catch (Exception e){
-                System.out.println("Opção deve ser um numero inteiro. Tente novamente");
-            }
-        }
+        UtilValidator businessRules = new UtilValidator();
+        int validChoice = businessRules.IntScannerValidator();
         switch (validChoice) {
             case 1:
-                Form.CreateForm();
-                Form.FormReader();
+                FormService.PetRegister();
                 break;
             case 2:
                 //Todo: alterar cadastro pet

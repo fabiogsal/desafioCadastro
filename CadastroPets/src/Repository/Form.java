@@ -1,13 +1,14 @@
 package Repository;
 
 import java.io.*;
+import java.util.Scanner;
 
 public class Form {
 
     private static final File filesDir = new File("Files");
     private static final File form = new File(filesDir, "formulario.txt");
 
-    public static void CreateForm(){
+    public void CreateForm(){
 
          boolean IsFileDirCreated = filesDir.mkdir();
 
@@ -35,15 +36,25 @@ public class Form {
              throw new RuntimeException(e);
          }
     }
-     public static void FormReader(){
+    public void FormReader(){
          try {
              BufferedReader formReader = new BufferedReader(new FileReader(form));
-             String linha;
-             while ((linha = formReader.readLine()) != null){
-                 System.out.println(linha);
+             String line;
+             while ((line = formReader.readLine()) != null){
+                 System.out.println(line);
              }
          } catch (IOException e) {
              throw new RuntimeException(e);
          }
     }
+    public void FormReaderNextLine(){
+        try {
+            BufferedReader formReader = new BufferedReader(new FileReader(form));
+            String line = formReader.readLine();
+            System.out.println(line);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
