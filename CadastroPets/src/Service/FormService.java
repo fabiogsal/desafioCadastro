@@ -13,23 +13,23 @@ public class FormService {
     public static void PetRegister(){
        Pet pet = new Pet();
        Address address = new Address();
-       Form form = new Form();
        Scanner scanner = new Scanner(System.in);
-       form.CreateForm();
+       Form.CreateForm();
        //Nome sobrenome
-        // form.FormReaderNextLine();
+        Form.FormReaderLine(1);
         pet.setName(Validator.nameValidator());
         //tipo (gato / chachorro)
-        form.FormReaderNextLine();
-        System.out.println("1 - Cachorro ||| 2 - Gato");
+        Form.FormReaderLine(2);
+        System.out.println("Opções: 1 - Cachorro ||| 2 - Gato");
         int choice = Validator.OneOrTwoValidator();
         pet.DefinePetType(choice);
         //sexo do animal
-        form.FormReaderNextLine();
+        Form.FormReaderLine(3);
+        System.out.println("Opções: 1 - Macho ||| 2 - Fêmea");
         choice = Validator.OneOrTwoValidator();
         pet.DefinePetGender(choice);
         //endereço
-        form.FormReaderNextLine();
+        Form.FormReaderLine(4);
         System.out.println("Digite o nome de sua cidade: ");
         address.setCity(Validator.OnlyLettersValidator());
         System.out.println("Digite o nome de sua rua: ");
@@ -37,21 +37,28 @@ public class FormService {
         System.out.println("Digite o número de sua residência: ");
         address.setHouseNumber(scanner.nextLine());
         //idade
-        form.FormReaderNextLine();
+        Form.FormReaderLine(5);
         double petAge = Validator.StringToDoubleValidator();
-        if (petAge < 20){
+        if (petAge < 1){
+            System.out.println("Digite a idade em meses: ");
+            int petAgemonths = Validator.IntScannerValidator();
+            petAge = (double) petAgemonths / 12;
+            System.out.println(petAge);
+
+        }
+        if (petAge > 20){
             throw new IllegalArgumentException("Valor execede a idade permitida");
         }
         pet.setAge(petAge);
         //peso
-        form.FormReaderNextLine();
+        Form.FormReaderLine(6);
         double petWeight = Validator.StringToDoubleValidator();
         if (petWeight > 60 || petWeight < 0.5) {
             throw new IllegalArgumentException("Valor não permitido");
         }
         pet.setWeight(petWeight);
         //raça
-        form.FormReaderNextLine();
+        Form.FormReaderLine(7);
         pet.setBreed(Validator.OnlyLettersValidator());
 
 

@@ -41,7 +41,6 @@ public class UtilValidator {
         String choice;
         int validChoice;
         while (true){
-            System.out.println("Insira a opção desejada: ");
             choice = scanner.nextLine();
             try {
                 validChoice = Integer.parseInt(choice);
@@ -59,7 +58,7 @@ public class UtilValidator {
     public String OnlyLettersValidator(){
         while (true) {
             String letters = scanner.nextLine();
-            String regex = "^[A-Za-z]+$";
+            String regex = "^[A-Za-z\\s]+$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(letters);
             if (matcher.find()) {
