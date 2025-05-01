@@ -1,7 +1,6 @@
 package Utils;
 
 
-import Repository.PetRepository;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -9,12 +8,12 @@ import java.util.regex.Pattern;
 
 public class UtilValidator {
     Scanner scanner = new Scanner(System.in);
-    private final String NAO_INFORMADO = "NAO INFORMADO";
-    //Valida nome(Apenas letras de a-z e obrigatoriamente exije um sobrenome)
+    private final String NAO_INFORMADO = "NÃO INFORMADO";
+    //Valida nome(Apenas letras de A-Z e obrigatoriamente exije um sobrenome)
     public String nameValidator() {
         while (true) {
             String name = scanner.nextLine();
-            String regex = "^[A-Za-z]+(?: [A-Za-z]+)+$";
+            String regex = "^[A-Za-zÀ-ÿ]+(?: [A-Za-zÀ-ÿ]+)+$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(name);
             if(name.isBlank()){
@@ -28,11 +27,11 @@ public class UtilValidator {
         }
     }
     //Tratamento de erro caso numero não seja um inteiro
-    public int IntScannerValidator() {
+    public int intScannerValidator() {
         String choice;
         int validChoice;
          while (true) {
-             System.out.println("Insira a opção desejada: ");
+             System.out.print("Insira a opção desejada: ");
              choice = scanner.nextLine();
              try {
                  validChoice = Integer.parseInt(choice);
@@ -42,7 +41,7 @@ public class UtilValidator {
              }
          }
     }
-    public int OneOrTwoValidator(){
+    public int oneOrTwoValidator(){
         String choice;
         int validChoice;
         while (true){
@@ -60,10 +59,10 @@ public class UtilValidator {
             }
         }
     }
-    public String OnlyLettersValidator(){
+    public String onlyLettersValidator(){
         while (true) {
             String letters = scanner.nextLine();
-            String regex = "^[A-Za-z\\s]+$";
+            String regex = "^[A-Za-zÀ-ÿ\\s]+$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(letters);
             if (matcher.find()) {
@@ -73,19 +72,72 @@ public class UtilValidator {
             }
         }
     }
-    //Converte String em double aceitando tanto o ponto quanto a virgula.
-    public double StringToDoubleValidator(){
-        String valueString;
-        double valueDouble;
-        while (true) {
-            valueString = scanner.nextLine();
+
+        public String petAgeValidator() {
+            String petAge;
+            while (true){
+                petAge = scanner.nextLine();
+                if (petAge.isBlank()){
+                    return NAO_INFORMADO;
+                }
+                try {
+                    double validPetAge = Double.parseDouble(petAge.replace(",", "."));
+                    if(validPetAge > 20){
+                        throw new IllegalArgumentException("Idade invalida");
+                    }
+                    if (validPetAge < 1){
+                        System.out.println("Digite idade em meses: ");
+                        int mountValue = intScannerValidator();
+                        double monthValueToDouble = (double) mountValue /12;
+                        petAge = String.valueOf(monthValueToDouble);
+                    }
+                    break;
+                }
+                catch (Exception e){
+                    System.out.println("Resposta de conter apenas números");
+                }
+            }
+            return petAge;
+        }
+    public String petWeightValidator() {
+        String petWeight;
+        System.out.println("Informe o peso em kg: ");
+        while (true){
+            petWeight = scanner.nextLine();
+            if (petWeight.isBlank()){
+                return NAO_INFORMADO;
+            }
             try {
-                valueDouble = Double.parseDouble(valueString.replace(",", "."));
+                double validPetWeight = Double.parseDouble(petWeight.replace(",", "."));
+                if(validPetWeight < 0.5 || validPetWeight >  60){
+                    throw new IllegalArgumentException("Valor invalido, peso deve estar entre 0.5kg e 60kg");
+                }
                 break;
-            } catch (Exception e) {
-                System.out.println("Deve conter apenas números");
+            }
+            catch (Exception e){
+                System.out.println("Resposta de conter apenas números");
             }
         }
-        return valueDouble;
+        return petWeight;
+    }
+
+    public String stringNullableValidator(){
+        String value = scanner.nextLine();
+        if (value.isBlank()){
+            return NAO_INFORMADO;
+        }
+        return value;
+    }
+
+    public String stringNotNullableValidator(){
+        String value;
+        while (true) {
+            value = scanner.nextLine();
+            if (!value.isBlank()) {
+                break;
+            }
+            System.out.println("Valor desse campo não pode ser vazio.");
+        }
+        return value;
     }
 }

@@ -34,9 +34,18 @@ public class PetRepository {
                     pet.getAddress().getHouseNumber()+", "+
                     pet.getAddress().getCity());
             fileWriter.newLine();
-            fileWriter.write("5 - "+pet.getAge()+" anos");
+            if (pet.getAge().equals("NÃO INFORMADO")){
+                fileWriter.write("5 - "+pet.getAge());
+            } else {
+                fileWriter.write("5 - " + pet.getAge() + " anos");
+            }
             fileWriter.newLine();
-            fileWriter.write("6 - "+pet.getWeight()+" kg");
+            if (pet.getWeight().equals("NÃO INFORMADO")){
+                fileWriter.write("6 - "+pet.getWeight());
+            }
+            else {
+                fileWriter.write("6 - " + pet.getWeight() + " kg");
+            }
             fileWriter.newLine();
             fileWriter.write("7 - "+pet.getBreed());
             fileWriter.newLine();

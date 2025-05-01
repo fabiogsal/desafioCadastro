@@ -7,17 +7,18 @@ import java.util.concurrent.TimeUnit;
 
 public class Menu {
     public static void DisplayMenu(){
-        System.out.println("1 - Cadastrar um novo pet\n" +
-                "2 - Alterar os dados do pet cadastrado\n" +
-                "3 - Deletar um pet cadastrado\n" +
-                "4 - Listar todos os pets cadastrados\n" +
-                "5 - Listar pets por algum critério (idade, nome, raça)\n" +
-                "6 - Sair");
+        System.out.println("""
+                1 - Cadastrar um novo pet
+                2 - Alterar os dados do pet cadastrado
+                3 - Deletar um pet cadastrado
+                4 - Listar todos os pets cadastrados
+                5 - Listar pets por algum critério (idade, nome, raça)
+                6 - Sair""");
         UserChoice();
     }
     public static void UserChoice(){
         UtilValidator businessRules = new UtilValidator();
-        int validChoice = businessRules.IntScannerValidator();
+        int validChoice = businessRules.intScannerValidator();
         switch (validChoice) {
             case 1:
                 FormService.PetRegister();

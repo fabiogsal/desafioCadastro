@@ -4,8 +4,8 @@ public class Pet {
     private String name;
     private PetType petType;
     private PetGender petGender;
-    private double age;
-    private double weight;
+    private String age;
+    private String weight;
     private String breed;
     private Address address;
 
@@ -58,7 +58,7 @@ public class Pet {
         this.petGender = petGender;
     }
 
-    public double getAge() {
+    public String getAge() {
         return age;
     }
 
@@ -70,15 +70,15 @@ public class Pet {
         this.address = address;
     }
 
-    public void setAge(double age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
-    public double getWeight() {
+    public String getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(String weight) {
         this.weight = weight;
     }
 }
