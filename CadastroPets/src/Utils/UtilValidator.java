@@ -1,13 +1,15 @@
 package Utils;
 
 
+import Repository.PetRepository;
+
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UtilValidator {
     Scanner scanner = new Scanner(System.in);
-
+    private final String NAO_INFORMADO = "NAO INFORMADO";
     //Valida nome(Apenas letras de a-z e obrigatoriamente exije um sobrenome)
     public String nameValidator() {
         while (true) {
@@ -15,6 +17,9 @@ public class UtilValidator {
             String regex = "^[A-Za-z]+(?: [A-Za-z]+)+$";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(name);
+            if(name.isBlank()){
+                return NAO_INFORMADO;
+            }
             if (matcher.find()) {
                 return name;
             } else {

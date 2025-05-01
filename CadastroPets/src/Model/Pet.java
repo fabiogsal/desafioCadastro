@@ -7,6 +7,7 @@ public class Pet {
     private double age;
     private double weight;
     private String breed;
+    private Address address;
 
     public void DefinePetType(int choice){
         if (choice == 1){
@@ -59,6 +60,14 @@ public class Pet {
 
     public double getAge() {
         return age;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public void setAge(double age) {

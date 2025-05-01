@@ -3,6 +3,7 @@ package Service;
 import Model.Address;
 import Model.Pet;
 import Repository.Form;
+import Repository.PetRepository;
 import Utils.UtilValidator;
 
 import java.util.Scanner;
@@ -30,11 +31,11 @@ public class FormService {
         pet.DefinePetGender(choice);
         //endereço
         Form.FormReaderLine(4);
-        System.out.println("Digite o nome de sua cidade: ");
+        System.out.println("Cidade: ");
         address.setCity(Validator.OnlyLettersValidator());
-        System.out.println("Digite o nome de sua rua: ");
+        System.out.println("Rua: ");
         address.setStreet(scanner.nextLine());
-        System.out.println("Digite o número de sua residência: ");
+        System.out.println("Número da residência: ");
         address.setHouseNumber(scanner.nextLine());
         //idade
         Form.FormReaderLine(5);
@@ -60,6 +61,8 @@ public class FormService {
         //raça
         Form.FormReaderLine(7);
         pet.setBreed(Validator.OnlyLettersValidator());
+        //salva informações no banco de dados
+        PetRepository.SavePetFile(pet);
 
 
 
