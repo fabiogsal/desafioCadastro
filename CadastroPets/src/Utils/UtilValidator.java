@@ -140,4 +140,32 @@ public class UtilValidator {
         }
         return value;
     }
+    public int intOrNullableValidator(){
+        String choice;
+        int validChoice;
+        while (true) {
+            System.out.print("Insira a opção desejada: ");
+            choice = scanner.nextLine();
+            if (choice.isBlank()){
+                choice = "0";
+            }
+            try {
+                validChoice = Integer.parseInt(choice);
+                return validChoice;
+            } catch (Exception e) {
+                System.out.println("Opção deve ser um numero inteiro ou uma resposta vazia. Tente novamente: ");
+            }
+        }
+    }
+    public String BlankStringValidator(){
+        String value;
+        while (true){
+            value = scanner.nextLine();
+            if (!value.isBlank()){
+                break;
+            }
+            System.out.println("Invalido. Resposta deve conter ao menos uma letra");
+        }
+        return value;
+    }
 }

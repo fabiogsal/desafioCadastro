@@ -1,5 +1,6 @@
 package Repository;
 
+import Service.PetService;
 import Utils.UtilValidator;
 import Service.FormService;
 
@@ -30,12 +31,13 @@ public class Menu {
                 //Todo: deletar pet
                 break;
             case 4:
-                //Todo: listar pet cadastrado
+                PetRepository.getAllPets();
                 break;
             case 5:
-                //Todo: Listar pet por criterio
+                PetService.getPet();
+                break;
             case 6:
-                System.out.println("Aplicação finalizada");
+                System.out.println("\nAplicação finalizada");
                 break;
             default:
                 System.out.println("Opção invalida. Por favor tente novamente.");
