@@ -1,12 +1,13 @@
 package Repository;
 
 import Model.Pet;
+import Service.PetService;
 import Utils.UtilValidator;
 import java.io.*;
-import java.text.Normalizer;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +15,7 @@ public class PetRepository {
     private static final File fileDir = new File("PetDB");
     private static final UtilValidator validator = new UtilValidator();
 
-    public static void SavePetFile(Pet pet){
+    public static void SavePetFile(Pet pet) {
 
         boolean mkdir = fileDir.mkdir();
 
@@ -22,39 +23,40 @@ public class PetRepository {
         LocalDateTime time = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("hhmm");
-        String formattedDate = time.format(formatter) +"T"+time.format(formatterTime);
-        String nameFileFormatted = formattedDate +"-"+pet.getName().toUpperCase().replaceAll(" ", "");
+        String formattedDate = time.format(formatter) + "T" + time.format(formatterTime);
+        String nameFileFormatted = formattedDate + "-" + pet.getName().toUpperCase().replaceAll(" ", "");
         File petFile = new File(fileDir, nameFileFormatted);
 
         //salva dados no txt
-        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(petFile))){
-            fileWriter.write("1 - "+pet.getName());
+        try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(petFile))) {
+            fileWriter.write("1 - " + pet.getName());
             fileWriter.newLine();
-            fileWriter.write("2 - "+pet.getPetType());
+            fileWriter.write("2 - " + pet.getPetType());
             fileWriter.newLine();
-            fileWriter.write("3 - "+pet.getPetGender());
+            fileWriter.write("3 - " + pet.getPetGender());
             fileWriter.newLine();
-            fileWriter.write("4 - "+pet.getAddress().getStreet()+", "+
-                    pet.getAddress().getHouseNumber()+", "+
+            fileWriter.write("4 - " + pet.getAddress().getStreet() + ", " +
+                    pet.getAddress().getHouseNumber() + ", " +
                     pet.getAddress().getCity());
             fileWriter.newLine();
-            if (pet.getAge().equals("NÃO INFORMADO")){
-                fileWriter.write("5 - "+pet.getAge());
+            if (pet.getAge().equals("NÃO INFORMADO")) {
+                fileWriter.write("5 - " + pet.getAge());
             } else {
                 fileWriter.write("5 - " + pet.getAge() + " anos");
             }
             fileWriter.newLine();
-            if (pet.getWeight().equals("NÃO INFORMADO")){
-                fileWriter.write("6 - "+pet.getWeight());
-            }
-            else {
+            if (pet.getWeight().equals("NÃO INFORMADO")) {
+                fileWriter.write("6 - " + pet.getWeight());
+            } else {
                 fileWriter.write("6 - " + pet.getWeight() + " kg");
             }
             fileWriter.newLine();
-            fileWriter.write("7 - "+pet.getBreed());
+            fileWriter.write("7 - " + pet.getBreed());
             fileWriter.newLine();
+            fileWriter.flush();
+            fileWriter.close();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Erro ao salvar pet no banco de dados.");
         }
     }
@@ -63,11 +65,12 @@ public class PetRepository {
         File[] files = fileDir.listFiles();
         int fileCont = 1;
         for (File file : files) {
-            System.out.println(fileCont+" - "+formatedSearch(file));
+            System.out.println(fileCont + " - " + formatedSearch(file));
             fileCont++;
         }
     }
-    public static StringBuilder formatedSearch(File file){
+
+    public static StringBuilder formatedSearch(File file) {
         try {
             BufferedReader fileReader = new BufferedReader(new FileReader(file));
             String line;
@@ -77,68 +80,124 @@ public class PetRepository {
                 result.append(line).append(" - ");
             }
             result = new StringBuilder(result.substring(0, result.length() - 3));
+            fileReader.close();
             return result;
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    public static String returnFileLine(int specificLine, File file){
+
+    public static String returnFileLine(int specificLine, File file) {
         try {
             BufferedReader fileReader = new BufferedReader(new FileReader(file));
             int cont = 1;
             String line;
             while ((line = fileReader.readLine()) != null) {
                 if (cont == specificLine) {
+                    fileReader.close();
                     return line;
                 }
                 cont++;
             }
+            fileReader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         return "Linha não encontrada";
     }
 
 
-    public static void findByCriteria(int criteria1, int criteria2){
+    public static ArrayList<String> findByCriteria(int criteria1, int criteria2) {
         File[] files = fileDir.listFiles();
+        ArrayList<String> petList = new ArrayList<>();
         ArrayList<Integer> specificLine = getIntegers(criteria1, criteria2);
         System.out.print("Buscar: ");
         String regex = validator.BlankStringValidator();
         Pattern pattern = Pattern.compile(Pattern.quote(regex), Pattern.CASE_INSENSITIVE);
         int cont = 1;
-        for (File file : files){
+        for (File file : files) {
             Matcher matcher1 = pattern.matcher(returnFileLine(2, file));
             Matcher matcher2 = pattern.matcher(returnFileLine(specificLine.get(0), file));
             Matcher matcher3 = pattern.matcher(returnFileLine(specificLine.get(1), file));
-            if (matcher1.find() || matcher2.find() || matcher3.find()){
-                System.out.println(cont+" - "+formatedSearch(file));
+            if (matcher1.find() || matcher2.find() || matcher3.find()) {
+                String formated = cont + " - " + formatedSearch(file);
+                petList.add(formated);
                 cont++;
             }
         }
-        if (cont == 1){
-            System.out.println("Não consta no banco de dados");
+        if (petList.isEmpty()) {
+            System.out.println("Não foi possível encontrar no banco de dados");
         }
+        return petList;
     }
-    public static void findByCriteria(int criteria1){
+
+    public static ArrayList<String> findByCriteria(int criteria1) {
         File[] files = fileDir.listFiles();
+        ArrayList<String> petList = new ArrayList<>();
         ArrayList<Integer> specificLine = getIntegers(criteria1);
         System.out.print("Buscar: ");
         String regex = validator.BlankStringValidator();
         Pattern pattern = Pattern.compile(Pattern.quote(regex), Pattern.CASE_INSENSITIVE);
         int cont = 1;
-        for (File file : files){
+        for (File file : files) {
             Matcher matcher1 = pattern.matcher(returnFileLine(2, file));
             Matcher matcher2 = pattern.matcher(returnFileLine(specificLine.getFirst(), file));
-            if (matcher1.find() || matcher2.find()){
-                System.out.println(cont+" - "+formatedSearch(file));
+            if (matcher1.find() || matcher2.find()) {
+
+                String formatedString = cont + " - " + formatedSearch(file);
+                petList.add(formatedString);
                 cont++;
             }
         }
-        if (cont == 1){
-            System.out.println("Não consta no banco de dados");
+        if (petList.isEmpty()) {
+            System.out.println("Não foi possível encontrar no banco de dados");
+        }
+        return petList;
+    }
+
+    public static void deletePet() {
+        int choice;
+        ArrayList<String> petList;
+
+        while (true) {
+            do {
+                petList = PetService.getPet();
+            } while (petList.isEmpty());
+            choice = validator.intScannerValidator();
+            if (choice <= petList.size()) {
+                break;
+            }
+            System.out.println("Permito apenas valores de 0 à " + petList.size());
+        }
+        String selectedPet = petList.get(choice-1);
+        System.out.println("Pet selecionado ");
+        System.out.println(selectedPet);
+        System.out.println("Você tem certeza que deseja deleta-lo? [SIM/NÃO]: ");
+        boolean check = validator.YesOrNot();
+        selectedPet = selectedPet.substring(4);
+
+        if (check) {
+            File[] files = fileDir.listFiles();
+            assert files != null;
+            for (File file : files) {
+                String formatedFile = String.valueOf(formatedSearch(file));
+                if (formatedFile.equals(selectedPet)) {
+                    boolean delete = file.delete();
+                    if (delete){
+
+                        System.out.println("Arquivo deletado com sucesso");
+                    }
+                    else{
+                        System.out.println("Não foi possível deletar arquivo " );
+                    }
+
+                }
+            }
         }
     }
+
+
 
     private static ArrayList<Integer> getIntegers(int criteria1, int criteria2) {
         ArrayList<Integer> specificLine = new ArrayList<>();

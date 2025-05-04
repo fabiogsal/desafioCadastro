@@ -28,7 +28,7 @@ public class Menu {
                 //Todo: alterar cadastro pet
                 break;
             case 3:
-                //Todo: deletar pet
+                PetRepository.deletePet();
                 break;
             case 4:
                 PetRepository.getAllPets();

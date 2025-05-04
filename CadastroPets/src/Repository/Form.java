@@ -31,6 +31,7 @@ public class Form {
                  formWriter.write("7 - Qual a raça do pet?");
                  formWriter.newLine();
                  formWriter.flush();
+                 formWriter.close();
              }
          } catch (IOException e) {
              throw new RuntimeException(e);
@@ -43,6 +44,7 @@ public class Form {
              while ((line = formReader.readLine()) != null){
                  System.out.println(line);
              }
+             formReader.close();
          } catch (IOException e) {
              throw new RuntimeException(e);
          }
@@ -59,6 +61,7 @@ public class Form {
                 }
                 cont++;
             }
+            formReader.close();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

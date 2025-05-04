@@ -3,10 +3,12 @@ package Service;
 import Repository.PetRepository;
 import Utils.UtilValidator;
 
+import java.util.ArrayList;
+
 
 public class PetService {
     private static final UtilValidator validator = new UtilValidator();
-    public static void getPet(){
+    public static ArrayList<String> getPet(){
         System.out.println("""
              escolha um ou dois critérios para buscar um pet
              1 - Nome ou sobrenome
@@ -38,9 +40,15 @@ public class PetService {
             }
             System.out.println("Resposta invalida. O campo deve ser vazio ou números de 0 a 6.");
         }
+        ArrayList<String> petList;
         if (choice2 != 0)
-            PetRepository.findByCriteria(choice1, choice2);
+            petList =PetRepository.findByCriteria(choice1, choice2);
         else
-            PetRepository.findByCriteria(choice1);
+            petList = PetRepository.findByCriteria(choice1);
+        for (String pet : petList){
+            System.out.println(pet);
+        }
+        return petList;
     }
+
 }

@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UtilValidator {
-    Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     private final String NAO_INFORMADO = "NÃO INFORMADO";
     //Valida nome(Apenas letras de A-Z e obrigatoriamente exije um sobrenome)
     public String nameValidator() {
@@ -167,5 +167,18 @@ public class UtilValidator {
             System.out.println("Invalido. Resposta deve conter ao menos uma letra");
         }
         return value;
+    }
+    public boolean YesOrNot() {
+        while (true) {
+            String choice = onlyLettersValidator();
+            choice = choice.toUpperCase().replace("Ã", "A");
+            if (choice.equals("SIM")) {
+                return true;
+            }
+            if (choice.equals("NAO")) {
+                return false;
+            }
+            System.out.println("Resposta deve ser ''Sim'' ou '''Não''.");
+        }
     }
 }
