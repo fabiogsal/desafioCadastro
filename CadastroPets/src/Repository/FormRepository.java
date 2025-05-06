@@ -1,9 +1,8 @@
 package Repository;
 
 import java.io.*;
-import java.util.List;
 
-public class Form {
+public class FormRepository {
 
     private static final File filesDir = new File("Files");
     private static final File form = new File(filesDir, "formulario.txt");

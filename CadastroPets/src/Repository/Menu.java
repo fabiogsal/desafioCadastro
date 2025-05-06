@@ -7,6 +7,7 @@ import Service.FormService;
 import java.util.concurrent.TimeUnit;
 
 public class Menu {
+    private static final PetRepository petRepository = new PetRepository();
     public static void DisplayMenu(){
         System.out.println("""
                 1 - Cadastrar um novo pet
@@ -25,13 +26,13 @@ public class Menu {
                 FormService.PetRegister();
                 break;
             case 2:
-                //Todo: alterar cadastro pet
+               PetService.updatePet();
                 break;
             case 3:
-                PetRepository.deletePet();
+                PetService.deletePet();
                 break;
             case 4:
-                PetRepository.getAllPets();
+                petRepository.getAllPets();
                 break;
             case 5:
                 PetService.getPet();

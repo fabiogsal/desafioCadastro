@@ -121,7 +121,7 @@ public class UtilValidator {
         return petWeight;
     }
 
-    public String stringNullableValidator(){
+    public String stringOrNullableValidator(){
         String value = scanner.nextLine();
         if (value.isBlank()){
             return NAO_INFORMADO;

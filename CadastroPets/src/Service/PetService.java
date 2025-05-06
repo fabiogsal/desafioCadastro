@@ -1,13 +1,19 @@
 package Service;
 
+import Model.Address;
 import Repository.PetRepository;
 import Utils.UtilValidator;
 
+import java.io.File;
 import java.util.ArrayList;
+
+import static Repository.PetRepository.formatedSearch;
 
 
 public class PetService {
     private static final UtilValidator validator = new UtilValidator();
+    private static final File fileDir = new File("PetDB");
+    private static final PetRepository petRepository = new PetRepository();
     public static ArrayList<String> getPet(){
         System.out.println("""
              escolha um ou dois critérios para buscar um pet
@@ -42,13 +48,103 @@ public class PetService {
         }
         ArrayList<String> petList;
         if (choice2 != 0)
-            petList =PetRepository.findByCriteria(choice1, choice2);
+            petList =petRepository.findByCriteria(choice1, choice2);
         else
-            petList = PetRepository.findByCriteria(choice1);
+            petList = petRepository.findByCriteria(choice1);
         for (String pet : petList){
             System.out.println(pet);
         }
         return petList;
     }
+    public static void updatePet() {
+        int choice;
+        ArrayList<String> petList;
 
+        while (true) {
+            do {
+                petList = PetService.getPet();
+            } while (petList.isEmpty());
+            choice = validator.intScannerValidator();
+            if (choice <= petList.size()) {
+                break;
+            }
+            System.out.println("Permitido apenas valores de 0 à " + petList.size());
+        }
+        String selectedPet = petList.get(choice - 1);
+        System.out.println("Pet selecionado ");
+        System.out.println(selectedPet);
+        System.out.println("Você tem certeza que deseja altera-lo? [SIM/NÃO]: ");
+        boolean check = validator.YesOrNot();
+        selectedPet = selectedPet.substring(4);
+        if (check) {
+            File[] files = fileDir.listFiles();
+            assert files != null;
+            for (File file : files) {
+                String formatedFile = String.valueOf(formatedSearch(file));
+                if (formatedFile.equals(selectedPet)) {
+                    petRepository.readFile(file);
+                    System.out.println("Digite qual atributo deseja alterar: ");
+                    int numLine= validator.intScannerValidator();
+                    if (!(numLine == 2 || numLine == 3 || numLine > 7)){
+                        System.out.println(PetRepository.returnFileLine(numLine, file));
+                        System.out.print("Alterar por: ");
+                        String updatedLine;
+                        if (numLine == 1){
+                            updatedLine = validator.nameValidator();
+                            petRepository.updatePet(file, numLine, updatedLine);
+                        } else if (numLine == 4) {
+                            Address address = new Address();
+                            System.out.print("Cidade: ");
+                            address.setCity(validator.onlyLettersValidator());
+                            System.out.print("Rua: ");
+                            address.setStreet(validator.stringNotNullableValidator());
+                            System.out.print("Número da residência: ");
+                            address.setHouseNumber(validator.stringOrNullableValidator());
+                            updatedLine = address.getStreet()+", "+address.getHouseNumber()+", "+address.getCity();
+                            petRepository.updatePet(file, numLine, updatedLine);
+                        } else if (numLine == 5) {
+                            updatedLine = validator.petAgeValidator();
+                            petRepository.updatePet(file, numLine, updatedLine);
+                        }else if (numLine == 6) {
+                            updatedLine = validator.petWeightValidator();
+                            petRepository.updatePet(file, numLine, updatedLine);
+                        }else if (numLine == 7) {
+                            updatedLine = validator.stringOrNullableValidator();
+                            petRepository.updatePet(file, numLine, updatedLine);
+                        }
+                    } else {
+                        System.out.println("Opção selecionada não existe ou não pode ser alterada.");
+                    }
+
+
+                }
+            }
+
+        }
+    }
+    public static void deletePet() {
+        int choice;
+        ArrayList<String> petList;
+
+        while (true) {
+            do {
+                petList = PetService.getPet();
+            } while (petList.isEmpty());
+            choice = validator.intScannerValidator();
+            if (choice <= petList.size()) {
+                break;
+            }
+            System.out.println("Permitido apenas valores de 0 à " + petList.size());
+        }
+        String selectedPet = petList.get(choice-1);
+        System.out.println("Pet selecionado ");
+        System.out.println(selectedPet);
+        System.out.println("Você tem certeza que deseja deleta-lo? [SIM/NÃO]: ");
+        boolean check = validator.YesOrNot();
+        selectedPet = selectedPet.substring(4);
+
+        if (check) {
+            petRepository.deletePet(selectedPet);
+        }
+    }
 }

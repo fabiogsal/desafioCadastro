@@ -1,9 +1,13 @@
 package Repository;
 
+import Model.Address;
 import Model.Pet;
+import Model.PetGender;
+import Model.PetType;
 import Service.PetService;
 import Utils.UtilValidator;
 import java.io.*;
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -15,7 +19,7 @@ public class PetRepository {
     private static final File fileDir = new File("PetDB");
     private static final UtilValidator validator = new UtilValidator();
 
-    public static void SavePetFile(Pet pet) {
+    public void SavePetFile(Pet pet) {
 
         boolean mkdir = fileDir.mkdir();
 
@@ -61,12 +65,24 @@ public class PetRepository {
         }
     }
 
-    public static void getAllPets() {
+    public void getAllPets() {
         File[] files = fileDir.listFiles();
         int fileCont = 1;
         for (File file : files) {
             System.out.println(fileCont + " - " + formatedSearch(file));
             fileCont++;
+        }
+    }
+    public void readFile(File file){
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            String linha;
+            while ((linha = bufferedReader.readLine()) != null){
+                System.out.println(linha);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -108,7 +124,7 @@ public class PetRepository {
     }
 
 
-    public static ArrayList<String> findByCriteria(int criteria1, int criteria2) {
+    public ArrayList<String> findByCriteria(int criteria1, int criteria2) {
         File[] files = fileDir.listFiles();
         ArrayList<String> petList = new ArrayList<>();
         ArrayList<Integer> specificLine = getIntegers(criteria1, criteria2);
@@ -132,7 +148,7 @@ public class PetRepository {
         return petList;
     }
 
-    public static ArrayList<String> findByCriteria(int criteria1) {
+    public ArrayList<String> findByCriteria(int criteria1) {
         File[] files = fileDir.listFiles();
         ArrayList<String> petList = new ArrayList<>();
         ArrayList<Integer> specificLine = getIntegers(criteria1);
@@ -156,47 +172,75 @@ public class PetRepository {
         return petList;
     }
 
-    public static void deletePet() {
-        int choice;
-        ArrayList<String> petList;
+    public void deletePet(String selectedPet) {
+        File[] files = fileDir.listFiles();
+        assert files != null;
+        for (File file : files) {
+            String formatedFile = String.valueOf(formatedSearch(file));
+            if (formatedFile.equals(selectedPet)) {
+                boolean delete = file.delete();
+                if (delete){
 
-        while (true) {
-            do {
-                petList = PetService.getPet();
-            } while (petList.isEmpty());
-            choice = validator.intScannerValidator();
-            if (choice <= petList.size()) {
-                break;
-            }
-            System.out.println("Permito apenas valores de 0 à " + petList.size());
-        }
-        String selectedPet = petList.get(choice-1);
-        System.out.println("Pet selecionado ");
-        System.out.println(selectedPet);
-        System.out.println("Você tem certeza que deseja deleta-lo? [SIM/NÃO]: ");
-        boolean check = validator.YesOrNot();
-        selectedPet = selectedPet.substring(4);
-
-        if (check) {
-            File[] files = fileDir.listFiles();
-            assert files != null;
-            for (File file : files) {
-                String formatedFile = String.valueOf(formatedSearch(file));
-                if (formatedFile.equals(selectedPet)) {
-                    boolean delete = file.delete();
-                    if (delete){
-
-                        System.out.println("Arquivo deletado com sucesso");
-                    }
-                    else{
-                        System.out.println("Não foi possível deletar arquivo " );
-                    }
-
+                    System.out.println("Arquivo deletado com sucesso");
                 }
+                else{
+                    System.out.println("Não foi possível deletar arquivo " );
+                }
+
             }
         }
     }
+    public void updatePet(File file, int numLine, String updatedLine){
+        String petName = returnFileLine(1, file).split(" - ")[1];
+        String petType = returnFileLine(2, file).split(" - ")[1];
+        String petGender = returnFileLine(3, file).split(" - ")[1];
+        String petAddress = returnFileLine(4, file).split(" - ")[1];
+        String petAge = returnFileLine(5, file).split(" - ")[1].split(" anos")[0];
+        String petWeight = returnFileLine(6, file).split(" - ")[1].split(" kg")[0];
+        String petBreed = returnFileLine(7, file).split(" - ")[1];
 
+        if (numLine == 1){
+            String newName = file.getName().split("-")[0]+"-"+updatedLine.toUpperCase().replaceAll(" ", "");
+            File newFileName = new File(newName);
+            boolean isFileRenamed = file.renameTo(newFileName);
+            if (isFileRenamed){
+                petName = updatedLine;
+            } else {
+                System.out.println("Erro ao renomear arquivo");
+            }
+        } else if (numLine == 4) {
+            petAddress = updatedLine;
+        } else if (numLine == 5) {
+            petAge = updatedLine;
+        } else if (numLine == 6) {
+            petWeight = updatedLine;
+        } else if (numLine == 7) {
+            petBreed = updatedLine;
+        } else {
+            System.out.println("Opção invalida. Tente novamente");
+        }
+        try {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+            bufferedWriter.write("1 - "+petName);
+            bufferedWriter.newLine();
+            bufferedWriter.write("2 - "+petType);
+            bufferedWriter.newLine();
+            bufferedWriter.write("3 - "+petGender);
+            bufferedWriter.newLine();
+            bufferedWriter.write("4 - "+petAddress);
+            bufferedWriter.newLine();
+            bufferedWriter.write("5 - "+petAge + " anos");
+            bufferedWriter.newLine();
+            bufferedWriter.write("6 - "+petWeight + " kg");
+            bufferedWriter.newLine();
+            bufferedWriter.write("7 - "+petBreed);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 
 
     private static ArrayList<Integer> getIntegers(int criteria1, int criteria2) {
